@@ -215,7 +215,7 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
-            {
+     /**       {
                 path: 'system/menu',
                 component: () => import('@/views/exampleViews/menu/index.vue'),
                 name: 'menu',
@@ -224,7 +224,7 @@ export const constantRoutes = [
                     redirectName: 'main-redirect',
                     hasTag: true,
                 },
-            },
+            },*/ 
             {
                 path: 'system/bt-permission',
                 component: () => import('@/views/exampleViews/btPermission/index.vue'),
