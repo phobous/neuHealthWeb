@@ -165,6 +165,36 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
+             {
+                path: 'care-level',
+                component: () => import('@/views/careManage/carelevel/index.vue'),
+                name: 'care-level',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+             {
+                path: 'care-Item',
+                component: () => import('@/views/careManage/careItem/index.vue'),
+                name: 'care-Item',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+           {
+                path: 'care-level-Item',
+                component: () => import('@/views/careManage/carelevel/ProjectConfig.vue'),
+                name: 'care-level-Item',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
             {
                 path: 'role-list',
                 component: () => import('@/views/exampleViews/roleList/index.vue'),
