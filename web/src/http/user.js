@@ -128,6 +128,47 @@ const allApi = {
                 ],
             },
             {
+                title: '健康管家',
+                iconName: 'svg:laptop-check.svg',
+                childs: [
+                    {
+                        name: 'set-target',
+                        title: '设置服务对象',
+                        isCache: true,
+                        content: '添加、管理服务对象',
+                        iconName: 'svg:user-fill.svg',
+                        showTagIcon: true,
+                    },
+                    {
+                        name: 'manage-client',
+                        title: '设置服务对象-客户管理',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:care_Item.svg',
+                        showTagIcon: true,
+                        hidden:true,
+                    },
+                    {
+                        name: 'service-focus',
+                        title: '服务关注',
+                        isCache: true,
+                        content: '查看和管理关注的服务项',
+                        iconName: 'svg:user-fill.svg',
+                        showTagIcon: true,
+                    },
+                    {
+                        name: 'care-config',
+                        title: '服务关注-项目配置',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:care_Item.svg',
+                        showTagIcon: true,
+                        hidden:true,
+                    },
+                ]
+            },
+
+            {
                 name: 'merge-table',
                 title: '床位管理',
                 iconName: 'svg:laptop-check.svg',

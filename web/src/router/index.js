@@ -185,6 +185,47 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
+            {
+                path: 'set-target',
+                component: () => import('@/views/careGiver/cgAllocate/index.vue'),
+                name: 'set-target',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'manage-client',
+                component: () => import('@/views/careGiver/cgAllocate/clientManagement.vue'),
+                name: 'manage-client',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'care-config',
+                component: () => import('@/views/careGiver/careConfig/clientCareConfig.vue'),
+                name: 'care-config',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+
+            {
+                path: 'service-focus',
+                component: () => import('@/views/careGiver/careConfig/index.vue'),
+                name: 'service-focus',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
              {
                 path: 'care-level',
                 component: () => import('@/views/careManage/carelevel/index.vue'),
