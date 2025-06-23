@@ -156,9 +156,29 @@ export const constantRoutes = [
                 },
             },
              {
-                path: 'check-in',
-                component: () => import('@/views/exampleViews/checkIn/index.vue'),
+                path: 'client/check-in',
+                component: () => import('@/views/client/checkIn/index.vue'),
                 name: 'check-in',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'client/check-out-approval',
+                component: () => import('@/views/client/checkOut/index.vue'),
+                name: 'check-out-approval',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'client/out-approval',
+                component: () => import('@/views/client/out/index.vue'),
+                name: 'out-approval',
                 meta: {
                     layoutName: 'main',
                     redirectName: 'main-redirect',
