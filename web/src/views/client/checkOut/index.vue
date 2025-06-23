@@ -65,8 +65,9 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
-      @pagination="getList" />
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total"
+      v-model:current-page="data.queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
+      @size-change="getList" />
 
     <!-- 添加或修改退住申请对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
@@ -128,6 +129,7 @@
   import {
     listRequests,
     getCheckout,
+    getCheckoutPage,
     delRequests,
     addRequests,
     updateRequests,
@@ -231,10 +233,16 @@
   /** 查询退住申请列表 */
   function getList() {
     loading.value = true
-    listRequests(queryParams.value).then(response => {
-      requestsList.value = response
-      total.value = response.total
-      loading.value = false
+    console.log("当前页：", data.queryParams.pageNum)
+    getCheckoutPage({
+    pageNum: data.queryParams.pageNum,
+    pageSize: queryParams.pageSize,
+    name: queryParams.name
+    }).then(res => {
+    console.log(res.records)
+    requestsList.value = res.records
+    total.value = res.total
+    loading.value = false
     })
   }
 

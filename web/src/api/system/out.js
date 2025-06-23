@@ -9,6 +9,15 @@ export function listOut(query) {
     })
 }
 
+// 分页查询
+export function getOutPage(query) {
+    return request({
+        url: '/out/page',
+        method: 'get',
+        params: query
+    })
+}
+
 // 查询外出申请详细
 // 根据姓名
 export function getOut(name) {

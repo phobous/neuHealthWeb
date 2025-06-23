@@ -9,6 +9,15 @@ export function listRequests(query) {
     })
 }
 
+// 分页查询
+export function getCheckoutPage(query) {
+    return request({
+        url: '/checkout/page',
+        method: 'get',
+        params: query
+    })
+}
+
 // 查询退住申请详细
 // 根据姓名
 export function getCheckout(name) {

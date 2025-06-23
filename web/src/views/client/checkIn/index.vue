@@ -93,7 +93,7 @@
       </el-table-column>
     </el-table>
     <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total"
-      v-model:current-page="queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
+      v-model:current-page="data.queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
       @size-change="getList" />
 
 
@@ -266,12 +266,14 @@ const { queryParams, form, rules } = toRefs(data)
 /** 查询客户/老人基本信息列表 */
 function getList() {
   loading.value = true
+  console.log("当前页：", data.queryParams.pageNum)
   getClientPage({
-  pageNum: queryParams.pageNum,
+  pageNum: data.queryParams.pageNum,
   pageSize: queryParams.pageSize,
   name: queryParams.name,
   type: queryParams.type
   }).then(res => {
+  console.log(res.records)
   clientsList.value = res.records
   total.value = res.total
   loading.value = false

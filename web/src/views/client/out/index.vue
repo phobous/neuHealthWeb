@@ -81,8 +81,9 @@
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" v-model:page="queryParams.pageNum" v-model:limit="queryParams.pageSize"
-      @pagination="getList" />
+    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total"
+      v-model:current-page="data.queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
+      @size-change="getList" />
 
     <!-- 添加或修改外出申请对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
@@ -155,6 +156,7 @@ import { getCurrentInstance,ref,reactive,toRefs } from 'vue'
   import {
     listOut,
     getOut,
+    getOutPage,
     delOut,
     addOut,
     updateOut,
@@ -260,11 +262,16 @@ import { getCurrentInstance,ref,reactive,toRefs } from 'vue'
   /** 查询外出申请列表 */
   function getList() {
     loading.value = true
-    listOut(queryParams.value).then(response => {
-      console.log(response)
-      outList.value = response
-      total.value = response.total
-      loading.value = false
+    console.log("当前页：", data.queryParams.pageNum)
+    getOutPage({
+    pageNum: data.queryParams.pageNum,
+    pageSize: queryParams.pageSize,
+    name: queryParams.name
+    }).then(res => {
+    console.log(res.records)
+    outList.value = res.records
+    total.value = res.total
+    loading.value = false
     })
   }
 
