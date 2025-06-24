@@ -99,6 +99,11 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                     rewrite: (path) => path,
                 },
+                '/rooms': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    rewrite: (path) => path,
+                },
             },
         },
     };

@@ -7,6 +7,9 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 /** 添加公共样式 */
 import '@/style/index.scss';
+import '@/assets/fonts/iconfont/iconfont.css';
+import 'element-plus/dist/index.css';
+import * as Icons from '@element-plus/icons-vue';
 import App from './App.vue';
 import router from './router/index';
 /** 注册路由许可验证 */
@@ -30,6 +33,8 @@ if (!isProd()) {
     }, {});
 }
 const app = createApp(App);
+for (const [key, component] of Object.entries(Icons)) {
+    app.component(key, component);}
 app.use(router);
 app.use(pinia);
 app.mount('#app');

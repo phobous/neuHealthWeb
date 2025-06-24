@@ -449,6 +449,28 @@ export const constantRoutes = [
                     title: '修改密码',
                 },
             },
+            {
+                path: 'beds-show',
+                component: () => import('@/views/bed/view/bedShow/index.vue'),
+                name: 'beds-show',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                    title: '床位示意图',
+                },
+            },
+            {
+                path: 'beds-manage',
+                component: () => import('@/views/bed/view/bedUsages/index.vue'),
+                name: 'beds-manage',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                    title: '床位管理',
+                },
+            },
         ],
     },
 

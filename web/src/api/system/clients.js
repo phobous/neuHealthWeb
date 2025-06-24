@@ -18,6 +18,25 @@ export function getClientPage(query) {
   })
 }
 
+//多表联查分页
+export function getClientsWithRoomPage(params) {
+    // params 是对象，包含 pageNum, pageSize, name, type 等
+    return request({
+        url: '/clients/with-room/page',
+        method: 'get',
+        params
+    })
+}
+//根据房间号查找床位号
+export function getBedByRoom(roomId) {
+  return request({
+    url: '/clients/with-room/by-room',
+    method: 'get',
+    params: {
+      roomId
+    }
+  })
+}
 
 // 根据姓名和类型查询客户/老人基本信息详细
 export function getClients(name, type) {

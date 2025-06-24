@@ -33,16 +33,6 @@
       </el-col>
       <el-col :span="1.5">
         <el-button
-          type="danger"
-          plain
-          icon="Delete"
-          :disabled="multiple"
-          @click="handleDelete"
-          v-hasPermi="['system:clients:remove']"
-        >批量删除</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
           type="warning"
           plain
           icon="Download"
@@ -55,7 +45,7 @@
 
     <el-table v-loading="loading" :data="clientsList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="客户ID" align="center" prop="id" />
+      <el-table-column label="客户ID" align="center" prop="clientId" />
       <el-table-column label="姓名" align="center" prop="name" />
       <el-table-column label="性别" align="center" prop="gender" />
       <el-table-column label="民族" align="center" prop="nation" />
@@ -65,8 +55,11 @@
         </template>
       </el-table-column>
       <el-table-column label="身份证号" width="200" align="center" prop="idCard" />
+      <el-table-column label="楼号" align="center" prop="building" />
+      <el-table-column label="床号" align="center" prop="bedNumber" />
+      <el-table-column label="房间号" align="center" prop="roomNumber" />
       <el-table-column label="血型" align="center" prop="bloodType" />
-      <el-table-column label="膳食ID" align="center" prop="mealId" />
+      <!--<el-table-column label="膳食ID" align="center" prop="mealId" />-->
       <el-table-column label="入住时间" align="center" prop="checkInDate" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.checkInDate, '{y}-{m}-{d}') }}</span>
@@ -78,13 +71,13 @@
         </template>
       </el-table-column>
       <el-table-column label="老人类型" align="center" prop="type" />
-      <el-table-column label="是否逻辑删除" align="center" prop="isDeleted" />
+      <el-table-column label="家属" align="center" prop="contactName" />
+      <el-table-column label="家属联系电话" align="center" prop="phone" width="180" />
       <el-table-column label="添加时间" align="center" prop="createdAt" width="180">
         <template #default="scope">
           <span>{{ parseTime(scope.row.createdAt, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="所属床位ID" align="center" prop="bedId" />
       <el-table-column label="操作" width="150" align="center" class-name="small-padding fixed-width">
         <template #default="scope">
           <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:clients:edit']">修改</el-button>
@@ -100,77 +93,113 @@
     <!-- 添加或修改客户/老人基本信息对话框 -->
     <el-dialog :title="title" v-model="open" width="750px" append-to-body>
       <div style="padding: 0 24px;">
-      <el-form ref="clientsRef" :model="form" :rules="rules" label-width="100px">
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-form-item label="姓名" prop="name">
-              <el-input v-model="form.name" placeholder="请输入姓名" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="民族" prop="nation">
-              <el-input v-model="form.nation" placeholder="请输入民族" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="身份证号" prop="idCard">
-              <el-input v-model="form.idCard" @input="onIdCardChange" maxlength="18" placeholder="请输入身份证号" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="性别" prop="gender">
-              <el-radio-group v-model="form.gender">
-                <el-radio label="男">男</el-radio>
-                <el-radio label="女">女</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="出生日期" prop="birthDate">
-              <el-input v-model="form.birthDate" placeholder="自动填入" disabled />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="老人类型" prop="type">
-              <el-select v-model="form.type" placeholder="请选择类型">
-                <el-option label="自理" value="自理" />
-                <el-option label="护理" value="护理" />
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="血型" prop="bloodType">
-              <el-input v-model="form.bloodType" placeholder="请输入血型" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="入住时间" prop="checkInDate">
-              <el-date-picker v-model="form.checkInDate" type="date" value-format="YYYY-MM-DD" placeholder="请选择入住时间" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="合同到期" prop="contractEndDate">
-              <el-date-picker v-model="form.contractEndDate" type="date" value-format="YYYY-MM-DD"
-                placeholder="请选择合同到期时间" />
-            </el-form-item>
-          </el-col>
-
-          <el-col :span="12">
-            <el-form-item label="添加时间" prop="createdAt">
-              <el-date-picker v-model="form.createdAt" type="date" value-format="YYYY-MM-DD" placeholder="请选择添加时间" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="床位ID" prop="bedId">
-              <el-input v-model="form.bedId" placeholder="请输入床位ID" />
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
+        <el-form ref="clientsRef" :model="form" :rules="rules" label-width="100px">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form-item label="姓名" prop="name">
+                <el-input v-model="form.name" placeholder="请输入姓名" :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="楼栋">
+                <el-input value="606" disabled />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="民族" prop="nation">
+                <el-input v-model="form.nation" placeholder="请输入民族" :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+            <template v-if="!form.id">
+            <el-col :span="12">
+              <el-form-item label="房间号" prop="roomNumber">
+                <el-select v-model="form.roomNumber" placeholder="请选择房间号" @change="fetchBedOptions"
+                  :disabled="form.id != null">
+                  <el-option-group v-for="(rooms, floor) in roomOptions" :key="floor" :label="floor">
+                    <el-option v-for="room in rooms" :key="room.id" :label="room.roomNumber" :value="room.roomNumber" />
+                  </el-option-group>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </template>
+            <el-col :span="12">
+              <el-form-item label="身份证号" prop="idCard">
+                <el-input v-model="form.idCard" @input="onIdCardChange" maxlength="18" placeholder="请输入身份证号"
+                  :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+            <template v-if="!form.id">
+            <el-col :span="12">
+              <el-form-item label="床位号" prop="bedNumber">
+                <el-select v-model="form.bedNumber" placeholder="请选择床位号" @change="onBedChange"
+                  :disabled="form.id != null">
+                  <el-option v-for="bed in bedOptions" :key="bed.id" :label="bed.bedNumber" :value="bed.bedNumber" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </template>
+            <el-col :span="12">
+              <el-form-item label="性别" prop="gender">
+                <el-radio-group v-model="form.gender" :disabled="form.id != null">
+                  <el-radio label="男">男</el-radio>
+                  <el-radio label="女">女</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <template v-if="!form.id">
+            <el-col :span="12">
+              <el-form-item label="出生日期" prop="birthDate">
+                <el-input v-model="form.birthDate" placeholder="自动填入" disabled />
+              </el-form-item>
+            </el-col>
+          </template>
+            <el-col :span="12">
+              <el-form-item label="老人类型" prop="type">
+                <el-select v-model="form.type" placeholder="请选择类型" :disabled="form.id != null">
+                  <el-option label="自理" value="自理" />
+                  <el-option label="护理" value="护理" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="血型" prop="bloodType">
+                <el-input v-model="form.bloodType" placeholder="请输入血型" :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+            <template v-if="!form.id">
+            <el-col :span="12">
+              <el-form-item label="家属" prop="contactName">
+                <el-input v-model="form.contactName" placeholder="请输入联系人" :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+          
+            <el-col :span="12">
+              <el-form-item label="联系电话" prop="phone">
+                <el-input v-model="form.phone" placeholder="请输入联系电话" :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+          </template>
+            <el-col :span="12">
+              <el-form-item label="入住时间" prop="checkInDate">
+                <el-date-picker v-model="form.checkInDate" type="date" value-format="YYYY-MM-DD" placeholder="请选择入住时间"
+                  :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="合同到期" prop="contractEndDate">
+                <el-date-picker v-model="form.contractEndDate" type="date" value-format="YYYY-MM-DD"
+                  placeholder="请选择合同到期时间" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="添加时间" prop="createdAt">
+                <el-date-picker v-model="form.createdAt" type="date" value-format="YYYY-MM-DD" placeholder="请选择添加时间"
+                  :disabled="form.id != null" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </div>
-      <!-- 按钮美化 -->
       <template #footer>
         <div style="text-align: center; padding-top: 10px;">
           <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -184,9 +213,15 @@
 
 <script setup name="Clients">
 import { getCurrentInstance,ref,reactive,toRefs } from 'vue'
-import { listClients, getClientPage, getClients, delClients, delClient, addClients, updateClients } from
+import { listClients, getClientPage, getClientsWithRoomPage, getBedByRoom, getClients, delClients, delClient, addClients,
+updateClients
+} from
 "@/api/system/clients"
+import { getAllRooms } from '@/api/system/room'
 import { parseTime } from '@/utils/clientTool.js'
+import { download } from '@/utils/download'
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'
 const { proxy } = getCurrentInstance()
 
 const clientsList = ref([])
@@ -200,15 +235,20 @@ const total = ref(0)
 const title = ref("")
 const queryRef = ref(null)
 const clientsRef = ref(null)
+const roomOptions = ref([])
+const bedOptions = ref([])
 
 const data = reactive({
   form: {
     idCard: '',
     birthDate: '',
+    contactName:'',
+    phone:''
   },
   queryParams: {
     pageNum: 1,
     pageSize: 10,
+    clientId:null,
     name: null,
     gender: null,
     nation: null,
@@ -218,10 +258,15 @@ const data = reactive({
     mealId: null,
     checkInDate: null,
     contractEndDate: null,
-    type: '自理',
+    type: '',
     isDeleted: null,
     createdAt: null,
     bedId: null,
+    bedNumber:null,
+    building:'606',
+    floor:null,
+    roomId:null,
+    roomNumber:null,
     isAllocated:null
   },
   rules: {
@@ -236,6 +281,12 @@ const data = reactive({
   ],
   idCard: [
   { required: true, message: "身份证号不能为空", trigger: "blur" }
+  ],
+  contactName: [
+  { required: true, message: "家属不能为空", trigger: "blur" }
+  ],
+  phone: [
+  { required: true, message: "联系电话不能为空", trigger: "blur" }
   ],
   birthDate: [
   { required: true, message: "出生日期不能为空", trigger: "blur" }
@@ -261,17 +312,52 @@ const data = reactive({
   }
 })
 
+
 const { queryParams, form, rules } = toRefs(data)
+//
+const fetchRoomOptions = async () => {
+try {
+const res = await getAllRooms()
+roomOptions.value = res
+} catch (error) {
+console.error("加载房间列表失败:", error)
+}
+}
+//
+const fetchBedOptions = async (roomNumber) => {
+try {
+const selectedRoom = Object.values(roomOptions.value).flat().find(room => room.roomNumber === roomNumber)
+if (!selectedRoom) {
+bedOptions.value = []
+return
+}
+const res = await getBedByRoom(selectedRoom.id)
+bedOptions.value = res // 确保格式为 [{ bedNumber: "1" }, { bedNumber: "2" }]
+} catch (error) {
+console.error('加载床位失败:', error)
+}
+}
+//
+const onBedChange = (selectedBedNumber) => {
+const selectedBed = bedOptions.value.find(bed => bed.bedNumber === selectedBedNumber)
+if (selectedBed) {
+form.value.bedId = selectedBed.id
+} else {
+form.value.bedId = null
+}
+}
+
 
 /** 查询客户/老人基本信息列表 */
 function getList() {
   loading.value = true
+  console.log("准备查询，参数：", queryParams.value.name, queryParams.value.type)
   console.log("当前页：", data.queryParams.pageNum)
-  getClientPage({
+  getClientsWithRoomPage({
   pageNum: data.queryParams.pageNum,
   pageSize: queryParams.pageSize,
-  name: queryParams.name,
-  type: queryParams.type
+  name: queryParams.value.name,
+  type: queryParams.value.type
   }).then(res => {
   console.log(res.records)
   clientsList.value = res.records
@@ -289,10 +375,14 @@ function getList() {
 /** 根据姓名和类型查询客户/老人基本信息 */
 function getClient() {
 loading.value = true
-const { name, type } = queryParams.value
-getClients(name, type).then(response => {
-console.log(response)
-clientsList.value = response.client || []
+getClientsWithRoomPage({
+pageNum: data.queryParams.pageNum,
+pageSize: queryParams.pageSize,
+name: queryParams.name,
+type: queryParams.type
+}).then(response => {
+console.log("查询到的信息："+response.records)
+clientsList.value = response.records || []
 total.value = response.total || 0 
 loading.value = false
 }).catch(() => {
@@ -328,12 +418,40 @@ function reset() {
   clientsRef.value?.resetFields()
   //proxy.resetForm("clientsRef")
 }
+//
+function buildPayload(form) {
+return {
+client: {
+name: form.name,
+nation: form.nation,
+gender: form.gender,
+birthDate: form.birthDate,
+idCard: form.idCard,
+bloodType: form.bloodType,
+checkInDate: form.checkInDate,
+contractEndDate: form.contractEndDate,
+type: form.type,
+createdAt: form.createdAt,
+bedId: form.bedId,
+bedNumber: form.bedNumber,
+building: form.building,
+floor: form.floor,
+roomId: form.roomId,
+roomNumber: form.roomNumber
+},
+contact: {
+contactName: form.contactName,
+phone: form.phone
+}
+}
+}
+
 
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1
-  //getList()
-  getClient()
+  getList()
+  //getClient()
 }
 
 /** 重置按钮操作 */
@@ -353,7 +471,7 @@ function handleSelectionChange(selection) {
 function handleAdd() {
   reset()
   open.value = true
-  title.value = "添加客户/老人基本信息"
+  title.value = "入住登记"
 }
 
 /** 修改按钮操作 */
@@ -365,7 +483,7 @@ function handleUpdate(row) {
     form.value = response.client[0]
     console.log(form.value)
     open.value = true
-    title.value = "修改客户/老人基本信息"
+    title.value = "修改合同到期时间"
   })
 }
 
@@ -378,7 +496,9 @@ ElMessage.success("修改成功")
 open.value = false
 getList()
 } else {
-const response = await addClients(form.value)
+const payload = buildPayload(form.value)
+console.log("拼接的新增表单是这样的：",payload)
+const response = await addClients(payload)
 if (response.isOk === true) {
 ElMessage.success("新增成功")
 open.value = false
@@ -388,14 +508,20 @@ ElMessage.warning(response.msg || '新增失败，请重试')
 }
 }
 } catch (error) {
-console.error('提交表单错误:', error)
-ElMessage.error('操作失败，请稍后重试')
+  console.error('提交表单错误:', error)
+  const msg = error.response?.data?.message
+  if (msg) {
+  ElMessage.error(msg)
+  } else {
+  ElMessage.error('操作失败，请稍后重试')
+  }
 }
 }
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-const _ids = row.id || ids.value
+  console.log(row)
+const _ids = row.clientId || ids.value
 ElMessageBox.confirm(`是否确认删除客户/老人基本信息编号为"${_ids}"的数据项？`, '提示', {
 confirmButtonText: '确定',
 cancelButtonText: '取消',
@@ -442,12 +568,35 @@ if (!idCard || idCard.length < 2) return '' ; // 倒数第二位索引：length 
 
 
 
-/** 导出按钮操作 */
+/** 导出按钮操作 
 function handleExport() {
-  proxy.download('system/clients/export', {
-    ...queryParams.value
-  }, `clients_${new Date().getTime()}.xlsx`)
+download('/system/clients/export', { ...queryParams.value }, `clients_${Date.now()}.xlsx`)
+}*/
+function handleExport() {
+const exportData = clientsList.value.map(client => ({
+姓名: client.name,
+性别: client.gender,
+民族: client.nation,
+身份证号: client.idCard,
+出生日期: client.birthDate,
+楼号: client.building,
+房间号: client.roomNumber,
+床位号: client.bedNumber,
+血型: client.bloodType,
+入住时间: client.checkInDate,
+合同到期时间: client.contractEndDate,
+老人类型: client.type,
+添加时间: client.createdAt
+}))
+
+const worksheet = XLSX.utils.json_to_sheet(exportData)
+const workbook = XLSX.utils.book_new()
+XLSX.utils.book_append_sheet(workbook, worksheet, '客户信息')
+const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+const blob = new Blob([excelBuffer], { type: 'application/octet-stream' })
+saveAs(blob, `客户信息_${new Date().toISOString().slice(0, 10)}.xlsx`)
 }
 
 getList()
+fetchRoomOptions()
 </script>
