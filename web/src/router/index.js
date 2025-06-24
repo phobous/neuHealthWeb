@@ -156,9 +156,100 @@ export const constantRoutes = [
                 },
             },
              {
-                path: 'check-in',
-                component: () => import('@/views/exampleViews/checkIn/index.vue'),
+                path: 'client/check-in',
+                component: () => import('@/views/client/checkIn/index.vue'),
                 name: 'check-in',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+             {
+                path: 'care-level',
+                component: () => import('@/views/careManage/carelevel/index.vue'),
+                name: 'care-level',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+             {
+                path: 'care-Item',
+                component: () => import('@/views/careManage/careItem/index.vue'),
+                name: 'care-Item',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+           {
+                path: 'care-level-Item',
+                component: () => import('@/views/careManage/carelevel/ProjectConfig.vue'),
+                name: 'care-level-Item',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'client/check-out-approval',
+                component: () => import('@/views/client/checkOut/index.vue'),
+                name: 'check-out-approval',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'client/out-approval',
+                component: () => import('@/views/client/out/index.vue'),
+                name: 'out-approval',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'set-target',
+                component: () => import('@/views/careGiver/cgAllocate/index.vue'),
+                name: 'set-target',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'manage-client',
+                component: () => import('@/views/careGiver/cgAllocate/clientManagement.vue'),
+                name: 'manage-client',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'care-config',
+                component: () => import('@/views/careGiver/careConfig/clientCareConfig.vue'),
+                name: 'care-config',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+
+            {
+                path: 'service-focus',
+                component: () => import('@/views/careGiver/careConfig/index.vue'),
+                name: 'service-focus',
                 meta: {
                     layoutName: 'main',
                     redirectName: 'main-redirect',
