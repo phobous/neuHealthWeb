@@ -36,9 +36,10 @@
     </el-form>
 
     <el-row :gutter="10" class="mb8">
+      <!--
       <el-col :span="1.5">
         <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['system:out:add']">新增</el-button>
-      </el-col>
+      </el-col>-->
       <el-col :span="1.5">
         <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['system:out:export']">导出
         </el-button>
@@ -163,6 +164,8 @@ import { getCurrentInstance,ref,reactive,toRefs } from 'vue'
     review
   } from "@/api/system/out"
   import { parseTime } from '@/utils/clientTool.js'
+  import * as XLSX from 'xlsx'
+  import { saveAs } from 'file-saver'
 
   const {
     proxy
@@ -411,12 +414,42 @@ import { getCurrentInstance,ref,reactive,toRefs } from 'vue'
     }).catch(() => {})
   }
 
-  /** 导出按钮操作 */
+  /** 导出按钮操作 
   function handleExport() {
     proxy.download('system/out/export', {
       ...queryParams.value
     }, `out_${new Date().getTime()}.xlsx`)
+  }*/
+  function handleExport() {
+  if (!outList.value || outList.value.length === 0) {
+  proxy.$message.warning('没有数据可导出')
+  return
   }
 
+  // 构造导出数据，映射成中文表头
+  const exportData = outList.value.map(item => ({
+  '申请ID': item.id,
+  '客户姓名': item.clientName,
+  '外出事由': item.reason,
+  '外出时间': item.outTime ? item.outTime.slice(0, 10) : '',
+  '预计回院时间': item.expectedReturnTime ? item.expectedReturnTime.slice(0, 10) : '',
+  '实际回院时间': item.actualReturnTime ? item.actualReturnTime.slice(0, 10) : '',
+  '审批状态': item.status,
+  '审批人ID': item.reviewerId,
+  '审批时间': item.reviewTime ? item.reviewTime.slice(0, 10) : ''
+  }))
+
+  // 使用xlsx构建工作表和工作簿
+  const worksheet = XLSX.utils.json_to_sheet(exportData)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, '外出申请')
+
+  // 生成二进制数据
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+
+  // 转成blob并保存
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' })
+  saveAs(blob, `外出申请_${new Date().toISOString().slice(0, 10)}.xlsx`)
+  }
   getList()
 </script>

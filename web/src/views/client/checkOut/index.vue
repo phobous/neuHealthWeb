@@ -136,6 +136,8 @@
     review
   } from "@/api/system/checkout"
   import { parseTime } from '@/utils/clientTool.js'
+  import * as XLSX from 'xlsx'
+  import { saveAs } from 'file-saver'
   const {
     proxy
   } = getCurrentInstance()
@@ -381,11 +383,45 @@
     }).catch(() => {})
   }
 
-  /** 导出按钮操作 */
+  /** 导出按钮操作 
   function handleExport() {
     proxy.download('web/requests/export', {
       ...queryParams.value
     }, `requests_${new Date().getTime()}.xlsx`)
+  }*/
+  function handleExport() {
+  if (!requestsList.value || requestsList.value.length === 0) {
+  proxy.$message.warning('没有数据可导出')
+  return
+  }
+
+  // 组装导出数据，映射中文表头
+  const exportData = requestsList.value.map(item => ({
+  '申请ID': item.id,
+  '客户姓名': item.clientName,
+  '类型': item.type,
+  '原因': item.reason,
+  '申请时间': item.requestedAt ? item.requestedAt.slice(0, 10) : '',
+  '审批状态': item.status,
+  '审批人ID': item.reviewerId,
+  '审批时间': item.reviewTime ? item.reviewTime.slice(0, 10) : ''
+  }))
+
+  // 创建工作表
+  const worksheet = XLSX.utils.json_to_sheet(exportData)
+
+  // 创建工作簿并添加工作表
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, '退住申请')
+
+  // 写出二进制数据
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' })
+
+  // 生成blob对象
+  const blob = new Blob([excelBuffer], { type: 'application/octet-stream' })
+
+  // 保存文件，文件名带日期
+  saveAs(blob, `退住申请_${new Date().toISOString().slice(0, 10)}.xlsx`)
   }
 
   getList()
