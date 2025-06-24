@@ -114,6 +114,25 @@ const allApi = {
                 name: 'merge-table',
                 title: '床位管理',
                 iconName: 'svg:laptop-check.svg',
+                childs:[
+                    {
+                        name: 'beds-show',
+                        title: '床位示意图',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:borderverticle-fill.svg',
+                        showTagIcon: true,
+                    },
+                    {
+                        name: 'beds-manage',
+                        title: '床位管理',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:borderverticle-fill.svg',
+                        showTagIcon: true,
+                    },
+                    
+                ],
             },
             {
                 name: 'other-view',
