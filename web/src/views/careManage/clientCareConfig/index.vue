@@ -12,27 +12,13 @@
                     label-width="110px">
                     <el-row :gutter="0">
                         <el-col :span="6" :xs="6">
-                            <el-form-item label="护理项目姓名" prop="name">
+                            <el-form-item label="客户姓名" prop="name">
                                 <el-input
                                     v-model="dataContainer.form.name"
-                                    placeholder="请输入护理项目名称"
+                                    placeholder="请输入客户名称"
                                     clearable
                                     @clear="handleQuery"
                                     @keyup.enter="handleQuery"/>
-                            </el-form-item>
-                        </el-col>
-                        <el-col :span="6" :xs="6">
-                            <el-form-item label="状态" prop="status">
-                            <el-select
-                                v-model="dataContainer.form.status"
-                                placeholder="请选择状态"
-                                clearable
-                                @clear="handleQuery"
-                                @change="handleQuery"
-                            >
-                                <el-option label="启用" value="启用" />
-                                <el-option label="停用" value="停用" />
-                            </el-select>
                             </el-form-item>
                         </el-col>
                         <el-col :span="6" :xs="6" class="query-buttons">
@@ -50,7 +36,7 @@
                                     <SvgIcon 
                                         :style="'width:15px;height:15px;margin-right:10px;'"
                                         name="svg:redo.svg"></SvgIcon>
-                                    重置
+                                    刷新
                                 </el-button>
                             </el-form-item>
                         </el-col>
@@ -59,45 +45,7 @@
             </el-col>
         </el-row>
         <div class="table-box content-container page-content-box">
-            <div class="top-container">
-                <div class="left">
-                    <el-button
-                        v-if="hasPermi(['yx:checkin:add'])"
-                        type="primary"
-                        @click="handleAdd">
-                        添加
-                    </el-button>
-                    <el-button
-                        plain
-                        type="primary" 
-                        @click="handleExport">
-                        导出
-                    </el-button>
-                    <el-button
-                        plain
-                        type="danger"
-                        v-if="dataContainer.selectedIds.length > 0"
-                        @click="handleBatchDelete">
-                        批量删除
-                    </el-button>
-                </div>
-                <div class="right">
-                    <el-button
-                        circle 
-                        @click="resetQuery">
-                        <SvgIcon 
-                            :style="'width:15px;height:15px;'"
-                            name="svg:redo.svg"></SvgIcon>
-                    </el-button>
-                    <el-button
-                        circle 
-                        @click="dataContainer.showSearch=!dataContainer.showSearch">
-                        <SvgIcon 
-                            :style="'width:15px;height:15px;'"
-                            name="svg:search-bt.svg"></SvgIcon>
-                    </el-button>
-                </div>
-            </div>
+
             <div class="table-container">
                 <el-table
                     v-loading="dataContainer.loading"
@@ -116,87 +64,76 @@
                         show-overflow-tooltip
                         align="center"
                         min-width="60"
-                        prop="id"/>
+                        prop="clientId"/>
                     <el-table-column
-                        label="编号"
+                        label="客户姓名"
                         show-overflow-tooltip
                         align="center"
                         min-width="90"
-                        prop="code"/>
-                    <el-table-column
-                        label="名称"
-                        show-overflow-tooltip
-                        align="center"
-                        min-width="100"
                         prop="name"/>
                     <el-table-column
-                        label="价格"
+                        label="年龄"
                         show-overflow-tooltip
                         align="center"
-                        min-width="120"
-                        prop="price"/>
+                        min-width="60"
+                        prop="age"/>
                     <el-table-column
-                        label="执行周期"
+                        label="性别"
                         show-overflow-tooltip
                         align="center"
-                        min-width="120"
-                        prop="cycle"/>
+                        min-width="60"
+                        prop="gender"/>
                     <el-table-column
-                        label="执行次数"
+                        label="房间号"
                         show-overflow-tooltip
                         align="center"
                         min-width="90"
-                        prop="times"/>
+                        prop="roomNumber"/>
+                    <el-table-column
+                        label="床号"
+                        show-overflow-tooltip
+                        align="center"
+                        min-width="60"
+                        prop="bedNumber"/>
                      <el-table-column
-                        label="描述"
+                        label="所属楼房"
                         show-overflow-tooltip
                         align="center"
                         min-width="150"
-                        prop="description"/>
-                    <el-table-column
-                        label="状态"
+                        prop="building"/>
+                     <el-table-column
+                        label="联系电话"
                         show-overflow-tooltip
                         align="center"
-                        min-width="90"
-                        prop="status">
-                        <template #default="scope">
-                            <el-tag 
-                                :type="scope.row.status === '启用' ? 'success' : 
-                                       scope.row.status === '停用' ? 'info' : 'warning'">
-                                {{ scope.row.status }}
-                            </el-tag>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                        label="操作"
-                        width="250"
-                        fixed="right"
-                        class-name="small-padding fixed-width">
-                        <template #default="scope">
-                            <el-button
-                                :text="true"
-                                @click="handleDetails(scope.row,{
-                                    isShow:true,
-                                    afterTitle:' - 查看详情',
-                                })">
-                                查看
-                            </el-button>
-                            <el-button
-                                :text="true"
-                                @click="handleEdit(scope.row,{
-                                    isShow:false,
-                                    afterTitle:' - 编辑',
-                                })">
-                                修改
-                            </el-button>
-                            <el-button
-                                :text="true"
-                                type="danger"
-                                @click="handleDelete([scope.row.id])">
-                                删除
-                            </el-button>
-                        </template>
-                    </el-table-column>
+                        min-width="150"
+                        prop="phone"/>
+                    、<el-table-column
+                        label="护理级别"
+                        show-overflow-tooltip
+                        align="center"
+                        min-width="150"
+                        prop="careLevel"/>
+                    <!-- 操作栏 -->
+                        <el-table-column label="操作" width="250" fixed="right" class-name="small-padding fixed-width">
+                            <template #default="scope">
+                                <!-- 如果有护理级别，显示移除护理级别按钮 -->
+                                <el-button
+                                    v-if="scope.row.careLevel"
+                                    :text="true"
+                                    type="danger"
+                                    @click="removeCareLevel(scope.row)">
+                                    移除护理级别
+                                </el-button>
+                                <!-- 如果没有护理级别，显示设置护理级别按钮 -->
+                                <el-button
+                                    v-else
+                                    :text="true"
+                                    type="primary"
+                                    @click="setCareLevel(scope.row)">
+                                    设置护理级别
+                                </el-button>
+                            </template>
+                        </el-table-column>
                 </el-table>
             </div>
             <div class="pagination-container">
@@ -215,8 +152,8 @@
             </div>
         </div>
 
-        <AddDataDialog
-            ref="AddDataDialogRef"></AddDataDialog>
+        <CareLevelDialog
+            ref="CareLevelDialogRef"></CareLevelDialog>
     </div>
 </template>
 
@@ -229,17 +166,18 @@ import DictTags from '@/components/DictTags.vue';
 import {debounceFn} from "@/common/DebounceAndThrottle";
 import {messageSuccess,confirm} from "@/action/MessagePrompt.js";
 import {messageError} from "@/action/MessagePrompt.js";
-import AddDataDialog from './components/AddDataDialog.vue';
 import SvgIcon from "@/components/svgIcon/index.vue";
 import {hasPermi} from "@/action/PowerTools";
 import { ElMessageBox, ElMessage } from 'element-plus';
 import * as XLSX from 'xlsx';
 import { userDataStore } from '@/store/user';
+import CareLevelDialog from './components/CareLevelDialog.vue';
+
 
 export default defineComponent({
     components: {
         DictTags,
-        AddDataDialog,
+        CareLevelDialog,
         SvgIcon,
     },
     setup() {
@@ -247,8 +185,8 @@ export default defineComponent({
 
         // 使用 computed 监听 token 的变化
         const token = computed(() => userStore.userInfo.token);
-        const AddDataDialogRef = ref(null);  
         const router = useRouter();
+        const CareLevelDialogRef = ref(null);
         const dataContainer = reactive({
             loading:false,
             showSearch:true,
@@ -273,34 +211,35 @@ export default defineComponent({
         });
 
         /** 获取数据列表 */
-        const getDataList = debounceFn(async () => {
+         const getDataList = async () => {
             dataContainer.loading = true;
             try {
-                const response = await axios.get('http://localhost:8080/careItem/list', {
-                params: {
-                    pageNum: dataContainer.params.pageNum,
-                    pageSize: dataContainer.params.pageSize,
-                    name: dataContainer.form.name,
-                    status: dataContainer.form.status // 传状态参数
-                }
+                const response = await axios.get('http://localhost:8080/clientCare/listAllClients', {
+                    params: {
+                        pageNum: dataContainer.params.pageNum,
+                        pageSize: dataContainer.params.pageSize,
+                        name: dataContainer.form.name,
+                        status: dataContainer.form.status,
+                    }
                 });
                 if (response.data.isOk) {
-                dataContainer.checkinList = response.data.items || [];
-                dataContainer.config.total = dataContainer.checkinList.length; // 如果后端返回总数，可替换
-                // 这里分页自己处理（或者后端支持分页）
-                const start = (dataContainer.params.pageNum - 1) * dataContainer.params.pageSize;
-                const end = start + dataContainer.params.pageSize;
-                dataContainer.currDataList = dataContainer.checkinList.slice(start, end);
+                    const items = response.data.data || [];
+                    dataContainer.checkinList = items;
+                    dataContainer.config.total = items.length;
+
+                    // 前端分页，手动切片
+                    const start = (dataContainer.params.pageNum - 1) * dataContainer.params.pageSize;
+                    const end = start + dataContainer.params.pageSize;
+                    dataContainer.currDataList = items.slice(start, end);
                 } else {
-                messageError(response.data.msg || '获取数据失败');
+                    ElMessage.error(response.data.msg || '查询失败');
                 }
             } catch (error) {
-                messageError('网络请求失败，请检查连接');
+                ElMessage.error('网络请求失败，请检查连接');
             } finally {
                 dataContainer.loading = false;
             }
-            }, 300);
-
+        };
 
         getDataList();
 
@@ -345,33 +284,32 @@ export default defineComponent({
             getDataList();
         }
 
-        /** 搜索按钮操作 */
+     /** 搜索按钮操作 */
         const handleQuery = async () => {
             dataContainer.params.pageNum = 1; // 每次查询重置页码
             dataContainer.loading = true;
 
             try {
-                const response = await axios.get('http://localhost:8080/careItem/list', {
-                params: {
-                    status: dataContainer.form.status,  // 状态参数
-                    name: dataContainer.form.name,      // 名称模糊查询
-                }
+                const response = await axios.get('http://localhost:8080/clientCare/listClientsByName', {
+                    params: {
+                        name: dataContainer.form.name, // 客户姓名模糊查询
+                    }
                 });
 
                 if (response.data.isOk) {
-                const items = response.data.items || [];
-                dataContainer.checkinList = items;
-                dataContainer.config.total = items.length;
+                    const clients = response.data.data || []; // 从返回的数据中提取客户信息
+                    dataContainer.checkinList = clients;
+                    dataContainer.config.total = clients.length;
 
-                // 前端分页，手动切片
-                const start = (dataContainer.params.pageNum - 1) * dataContainer.params.pageSize;
-                const end = start + dataContainer.params.pageSize;
-                dataContainer.currDataList = items.slice(start, end);
+                    // 前端分页，手动切片
+                    const start = (dataContainer.params.pageNum - 1) * dataContainer.params.pageSize;
+                    const end = start + dataContainer.params.pageSize;
+                    dataContainer.currDataList = clients.slice(start, end);
                 } else {
-                dataContainer.checkinList = [];
-                dataContainer.currDataList = [];
-                dataContainer.config.total = 0;
-                ElMessage.error(response.data.msg || '查询失败');
+                    dataContainer.checkinList = [];
+                    dataContainer.currDataList = [];
+                    dataContainer.config.total = 0;
+                    ElMessage.error(response.data.msg || '查询失败');
                 }
             } catch (error) {
                 dataContainer.checkinList = [];
@@ -381,7 +319,55 @@ export default defineComponent({
             } finally {
                 dataContainer.loading = false;
             }
-            };
+        };
+
+
+       /** 配置按钮操作 */
+        function setCareLevel(row) {
+        if (CareLevelDialogRef.value) {
+            CareLevelDialogRef.value.open(row)
+        }
+        }
+
+
+
+       const removeCareLevel = async (row) => {
+            try {
+                // 弹出确认框，确认是否移除
+                console.log("客户ID: ", row.clientId);  // 调试日志，确认 clientId
+                console.log("护理级别ID: ", row.careLevelId);  // 调试日志，确认 careLevelId
+
+                await ElMessageBox.confirm(
+                    `确定要移除客户 ${row.name} 的护理级别吗？`,
+                    '移除护理级别',
+                    {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning',
+                    }
+                );
+
+                // 发送 POST 请求，传递 clientId 和 careLevelId，使用查询参数
+                const response = await axios.post('http://localhost:8080/clientCare/remove', null, {
+                    params: {
+                        clientId: row.clientId,  // 客户ID
+                        careLevelId: row.careLevelId,  // 护理级别ID
+                    }
+                });
+
+                if (response.data.isOk) {
+                    // 操作成功，提示成功消息并刷新数据
+                    ElMessage.success('护理级别移除成功');
+                    getDataList();
+                } else {
+                    // 操作失败，提示失败消息
+                    ElMessage.error(response.data.msg || '移除失败');
+                }
+            } catch (error) {
+                // 请求发生错误时，提示错误信息
+                ElMessage.error('移除护理级别失败');
+            }
+        };
 
 
         /** 重置按钮操作 */
@@ -412,85 +398,8 @@ export default defineComponent({
             XLSX.writeFile(workbook, '护理项目列表.xlsx');
             }
 
-        /** 新增按钮操作 */
-        function handleAdd() {
-            if (!AddDataDialogRef.value) return;
-            AddDataDialogRef.value.resetData();
-            AddDataDialogRef.value.initData(true, {}, {
-                afterTitle: ' - 新增护理项目', 
-                isShow: false
-            }).then(() => {
-                getDataList();
-            }).catch((closeType) => {
-                console.log(`Dialog closed with ${closeType}`);
-            });
-        }
 
-        /** 详情按钮操作 */
-        function handleDetails(row, querys = {}) {
-            if (!AddDataDialogRef.value) return;
-            AddDataDialogRef.value.resetData();
-            AddDataDialogRef.value.initData(true, {
-                ...row,
-            }, {
-                ...querys,
-                isShow: true, // ✅ 传入只读标志
-                afterTitle: ' - 查看详情'
-            }).then(() => {
-                // 查看详情不需要刷新列表
-            }).catch(() => {
-                // 用户关闭弹窗
-            });
-        }
-
-
-        /** 修改按钮操作 */
-        function handleEdit(row, querys) {
-            if (!AddDataDialogRef.value) return;
-            AddDataDialogRef.value.resetData();
-            AddDataDialogRef.value.initData(true, {
-                ...row,
-            }, {
-                ...querys,
-                afterTitle: ' - 修改项目详情', 
-            }).then(updatedRecord => {
-                // 更新成功后，刷新列表
-                getDataList();
-            }).catch(() => {
-                // 用户取消编辑
-            });
-        }
-
-        /** 退房操作 */
-        const handleCheckout = async (row) => {
-            try {
-                await ElMessageBox.confirm(
-                    `确定要为客户 ${row.name} 办理退房吗？`,
-                    '退房确认',
-                    {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning',
-                    }
-                );
-
-                const response = await axios.post(`http://localhost:9000/checkin/checkout`, {
-                    id: row.id
-                });
-
-                if (response.data.isOk) {
-                    ElMessage.success('退房成功');
-                    getDataList();
-                } else {
-                    ElMessage.error(response.data.msg || '退房失败');
-                }
-            } catch (error) {
-                if (error !== 'cancel') {
-                    ElMessage.error('退房操作失败');
-                }
-            }
-        };
-
+    
             /** 删除 */
             const handleDelete = async (id) => {
             try {
@@ -538,17 +447,15 @@ export default defineComponent({
             handleQuery,
             resetQuery,
             handleExport,
-            handleAdd,
-            handleDetails,
-            handleEdit,
-            handleCheckout,
             handleDelete,
             handleBatchDelete,
             handleSelectionChange,
-            AddDataDialogRef,
+            CareLevelDialogRef,
             hasPermi,
             handleSizeChange,
             handleCurrentChange,
+            removeCareLevel,
+            setCareLevel
         };
     },
 });

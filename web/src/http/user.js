@@ -173,7 +173,7 @@ const allApi = {
                 title: '床位管理',
                 iconName: 'svg:laptop-check.svg',
             },
-            {
+                  {
                 title: '护理管理',
                 iconName: 'svg:cog-fill.svg',
                 childs: [
@@ -203,8 +203,16 @@ const allApi = {
                         showTagIcon: true,
                     },
                     {
-                        name: 'role-list',
-                        title: '退住登记',
+                        name: 'client-care',
+                        title: '客户护理设置',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:user-group-fill.svg',
+                        showTagIcon: true,
+                    },
+                    {
+                        name: 'care-record',
+                        title: '护理记录',
                         isCache: true,
                         content: '',
                         iconName: 'svg:user-group-fill.svg',

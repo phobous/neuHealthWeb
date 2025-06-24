@@ -165,7 +165,7 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
-             {
+            {
                 path: 'care-level',
                 component: () => import('@/views/careManage/carelevel/index.vue'),
                 name: 'care-level',
@@ -192,7 +192,27 @@ export const constantRoutes = [
                 meta: {
                     layoutName: 'main',
                     redirectName: 'main-redirect',
-                    hasTag: true,
+                    hasTag: false,
+                },
+            },
+            {
+                path: 'care-record',
+                component: () => import('@/views/careManage/careRecord/index.vue'),
+                name: 'care-record',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
+                },
+            },
+            {
+                path: 'client-care',
+                component: () => import('@/views/careManage/clientCareConfig/index.vue'),
+                name: 'client-care',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
                 },
             },
             {
