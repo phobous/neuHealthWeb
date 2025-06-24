@@ -84,6 +84,26 @@ export default defineConfig(({ mode }) => {
                     changeOrigin: true,
                     rewrite: (p) => p.replace(/^\/upload-api/, ''),
                 },
+                '/client':{
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    rewrite: (path) => path,
+                },
+                '/out': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    rewrite: (path) => path,
+                },
+                '/checkout': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    rewrite: (path) => path,
+                },
+                '/rooms': {
+                    target: 'http://localhost:8080',
+                    changeOrigin: true,
+                    rewrite: (path) => path,
+                },
             },
         },
     };
