@@ -31,7 +31,6 @@ const allApi = {
             {
                 name: 'main-index',
                 title: '首页',
-                content: '(有缓存，并且标签页固定)',
                 isCache: true,
                 fixed: true,
                 iconName: 'svg:all-fill.svg',
@@ -74,7 +73,7 @@ const allApi = {
             },
             {
                 title: '客户管理',
-                iconName: 'svg:cog-fill.svg',
+                iconName: 'svg:client-manage.svg',
                 childs: [
                     // {
                     //     name: 'menu',
@@ -88,25 +87,21 @@ const allApi = {
                         name: 'check-in',
                         title: '入住登记',
                         isCache: true,
-                        content: '管理员',
-                        iconName: '',
+                        iconName: 'svg:user-in.svg',
                         showTagIcon: true,
                     },
                     {
                         name: 'out-approval',
                         title: '外出审批',
                         isCache: true,
-                        content: '管理员',
-                        iconName: '',
+                        iconName: 'svg:out-check.svg',
                         showTagIcon: true,
                     },
                     {
                         name: 'check-out-approval',
                         title: '退住审批',
                         isCache: true,
-                        content: '管理员',
-                        //iconName: 'svg:borderverticle-fill.svg',
-                        iconName: '',
+                        iconName: 'svg:roomout-check.svg',
                         showTagIcon: true,
                     },
                     {
@@ -116,6 +111,7 @@ const allApi = {
                         content: '',
                         iconName: 'svg:user-fill.svg',
                         showTagIcon: true,
+                        hidden:true,
                     },
                     {
                         name: 'role-list',
@@ -124,19 +120,19 @@ const allApi = {
                         content: '',
                         iconName: 'svg:user-group-fill.svg',
                         showTagIcon: true,
+                        hidden:true,
                     },
                 ],
             },
             {
                 title: '健康管家',
-                iconName: 'svg:laptop-check.svg',
+                iconName: 'svg:caregiver.svg',
                 childs: [
                     {
                         name: 'set-target',
                         title: '设置服务对象',
                         isCache: true,
-                        content: '添加、管理服务对象',
-                        iconName: 'svg:user-fill.svg',
+                        iconName: 'svg:set-care-client.svg',
                         showTagIcon: true,
                     },
                     {
@@ -153,7 +149,7 @@ const allApi = {
                         title: '服务关注',
                         isCache: true,
                         content: '查看和管理关注的服务项',
-                        iconName: 'svg:user-fill.svg',
+                        iconName: 'svg:service-care.svg',
                         showTagIcon: true,
                     },
                     {
@@ -171,14 +167,14 @@ const allApi = {
             {
                 name: 'merge-table',
                 title: '床位管理',
-                iconName: 'svg:laptop-check.svg',
+                iconName: 'svg:bed-manage.svg',
                 childs:[
                     {
                         name: 'beds-show',
                         title: '床位示意图',
                         isCache: true,
                         content: '',
-                        iconName: 'svg:borderverticle-fill.svg',
+                        iconName: 'svg:bed-picture.svg',
                         showTagIcon: true,
                     },
                     {
@@ -186,15 +182,15 @@ const allApi = {
                         title: '床位管理',
                         isCache: true,
                         content: '',
-                        iconName: 'svg:borderverticle-fill.svg',
+                        iconName: 'svg:bed-change.svg',
                         showTagIcon: true,
                     },
                     
                 ],
             },
-                  {
+            {
                 title: '护理管理',
-                iconName: 'svg:cog-fill.svg',
+                iconName: 'svg:care-manage.svg',
                 childs: [
                     {
                         name: 'care-level',
@@ -234,9 +230,23 @@ const allApi = {
                         title: '护理记录',
                         isCache: true,
                         content: '',
-                        iconName: 'svg:user-group-fill.svg',
+                        iconName: 'svg:care-record.svg',
                         showTagIcon: true,
                     },
+                ],
+            },
+             {
+                title: '用户管理',
+                iconName: 'svg:user-manage.svg',
+                childs: [
+                    {
+                        name: 'user-manage',
+                        title: '用户基础数据维护',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:user-data.svg',
+                        showTagIcon: true,
+                    }
                 ],
             },
             {
@@ -244,6 +254,7 @@ const allApi = {
                 title: '其他功能展示',
                 iconName: 'svg:map-fill.svg',
                 isCache: true,
+                hidden:true,
             },
             
             {

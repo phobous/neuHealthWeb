@@ -306,6 +306,16 @@ export const constantRoutes = [
                     hasTag: true,
                 },
             },
+             {
+                path: 'user-manage',
+                component: () => import('@/views/userManage/index.vue'),
+                name: 'user-manage',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
             {
                 path: 'role-list',
                 component: () => import('@/views/exampleViews/roleList/index.vue'),

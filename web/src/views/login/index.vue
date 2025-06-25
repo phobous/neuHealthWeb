@@ -128,7 +128,7 @@ export default defineComponent({
 
         try {
             console.log('请求参数:', params);  // 打印请求参数，确保它们正确
-            const res = await axios.post('http://localhost:9000/user/login', params, {
+            const res = await axios.post('http://localhost:8080/user/login', params, {
             headers: {
                 'Content-Type': 'application/json', // 确保传递的数据是 JSON 格式
             },
