@@ -196,3 +196,85 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-query-box {
+  margin: 0 0 10px 0 !important;
+  padding: 10px 10px 0 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  :deep(.el-form-item) {
+    margin-bottom: 10px !important;
+  }
+  :deep(.el-form-item--default) {
+    width: 100%;
+    margin-right: 0;
+  }
+  .el-form {
+    width: 100%;
+  }
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.page-content-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  .left {
+    display: flex;
+    gap: 10px;
+  }
+  .right {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.table-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.el-table {
+  flex: 1;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+</style>

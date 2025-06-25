@@ -71,6 +71,31 @@ const allApi = {
                 isCache: true,
                 hidden: true,
             },
+            
+            {
+                name: 'merge-table',
+                title: '床位管理',
+                iconName: 'svg:bed-manage.svg',
+                childs:[
+                    {
+                        name: 'beds-show',
+                        title: '床位示意图',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:bed-picture.svg',
+                        showTagIcon: true,
+                    },
+                    {
+                        name: 'beds-manage',
+                        title: '床位管理',
+                        isCache: true,
+                        content: '',
+                        iconName: 'svg:bed-change.svg',
+                        showTagIcon: true,
+                    },
+                    
+                ],
+            },
             {
                 title: '客户管理',
                 iconName: 'svg:client-manage.svg',
@@ -164,30 +189,6 @@ const allApi = {
                 ]
             },
 
-            {
-                name: 'merge-table',
-                title: '床位管理',
-                iconName: 'svg:bed-manage.svg',
-                childs:[
-                    {
-                        name: 'beds-show',
-                        title: '床位示意图',
-                        isCache: true,
-                        content: '',
-                        iconName: 'svg:bed-picture.svg',
-                        showTagIcon: true,
-                    },
-                    {
-                        name: 'beds-manage',
-                        title: '床位管理',
-                        isCache: true,
-                        content: '',
-                        iconName: 'svg:bed-change.svg',
-                        showTagIcon: true,
-                    },
-                    
-                ],
-            },
             {
                 title: '护理管理',
                 iconName: 'svg:care-manage.svg',

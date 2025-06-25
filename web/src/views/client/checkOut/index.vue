@@ -1,45 +1,53 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="客户姓名" prop="clientName">
-        <el-input v-model="queryParams.clientName" placeholder="请输入客户姓名" clearable @keyup.enter="handleQuery" />
-      </el-form-item>
-      <!--
-      <el-form-item label="申请时间" prop="requestedAt">
-        <el-date-picker clearable v-model="queryParams.requestedAt" type="date" value-format="YYYY-MM-DD"
-          placeholder="请选择申请时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="审批人ID" prop="reviewerId">
-        <el-input v-model="queryParams.reviewerId" placeholder="请输入审批人ID" clearable @keyup.enter="handleQuery" />
-      </el-form-item>
-      <el-form-item label="审批时间" prop="reviewTime">
-        <el-date-picker clearable v-model="queryParams.reviewTime" type="date" value-format="YYYY-MM-DD"
-          placeholder="请选择审批时间">
-        </el-date-picker>
-      </el-form-item>
-      -->
-      <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-      
-    </el-form>
-    
+  <div class="page-container main-view">
+     <!-- 搜索区域 -->
+  <el-row :gutter="0" v-show="showSearch" class="page-query-box">
+    <el-col :span="24" :xs="24">
+      <el-form :model="queryParams" ref="queryRef" :inline="true" label-width="68px">
+        <el-row :gutter="0">
+          <el-col :span="6" :xs="6">
+            <el-form-item label="客户姓名" prop="clientName">
+              <el-input
+                v-model="queryParams.clientName"
+                placeholder="请输入客户姓名"
+                clearable
+                @keyup.enter="handleQuery"
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="6" :xs="6" class="query-buttons">
+            <el-form-item label=" ">
+              <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+              <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+    </el-col>
+  </el-row>
+
+
+    <!-- 表格区域 -->
+ <div class="table-box content-container page-content-box">
+    <div class="top-container">
     <el-row :gutter="10" class="mb8">
-      <!--
-      <el-col :span="1.5">
-        <el-button type="primary" plain icon="Plus" @click="handleAdd" v-hasPermi="['web:requests:add']">新增</el-button>
-      </el-col>
-      -->
       <el-col :span="1.5">
         <el-button type="warning" plain icon="Download" @click="handleExport" v-hasPermi="['web:requests:export']">导出
         </el-button>
       </el-col>
       <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
-
-    <el-table v-loading="loading" :data="requestsList" @selection-change="handleSelectionChange">
+   </div>
+  
+      <!-- 表格 -->
+      <el-table
+        v-loading="loading"
+        :data="requestsList"
+        border
+        @selection-change="handleSelectionChange"
+        height="100%"
+      >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="申请ID" align="center" prop="id" />
       <el-table-column label="客户姓名" align="center" prop="clientName" />
@@ -68,6 +76,8 @@
     <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total"
       v-model:current-page="data.queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
       @size-change="getList" />
+</div>
+
 
     <!-- 添加或修改退住申请对话框 -->
     <el-dialog :title="title" v-model="open" width="500px" append-to-body>
@@ -426,3 +436,86 @@
 
   getList()
 </script>
+
+<style lang="scss" scoped>
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-query-box {
+  margin: 0 0 10px 0 !important;
+  padding: 10px 10px 0 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  :deep(.el-form-item) {
+    margin-bottom: 10px !important;
+  }
+  :deep(.el-form-item--default) {
+    width: 100%;
+    margin-right: 0;
+  }
+  .el-form {
+    width: 100%;
+  }
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.page-content-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  .left {
+    display: flex;
+    gap: 10px;
+  }
+  .right {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.table-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.el-table {
+  flex: 1;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+</style>

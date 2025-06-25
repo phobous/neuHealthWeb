@@ -1,93 +1,149 @@
 <template>
-  <div class="app-container">
-    <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="姓名" prop="name">
-        <el-input
-          v-model="queryParams.name"
-          placeholder="请输入姓名"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </el-form-item>
-      <el-form-item label="类型" prop="type">
-        <el-select v-model="queryParams.type" placeholder="请选择类型" clearable @change="handleQuery">
-          <el-option label="自理" value="自理" />
-          <el-option label="护理" value="护理" />
-        </el-select>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
-        <el-button icon="Refresh" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="Plus"
-          @click="handleAdd"
-          v-hasPermi="['system:clients:add']"
-        >新增</el-button>
+  <div class="page-container main-view">
+    <!-- 搜索区域 -->
+    <el-row
+      :gutter="0"
+      v-show="showSearch"
+      class="page-query-box"
+    >
+      <el-col :span="24" :xs="24">
+        <el-form
+          :model="queryParams"
+          ref="queryRef"
+          :inline="true"
+          label-width="68px"
+        >
+          <el-row :gutter="0">
+            <el-col :span="6" :xs="6">
+              <el-form-item label="姓名" prop="name">
+                <el-input
+                  v-model="queryParams.name"
+                  placeholder="请输入姓名"
+                  clearable
+                  @keyup.enter="handleQuery"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6" :xs="6">
+              <el-form-item label="类型" prop="type">
+                <el-select
+                  v-model="queryParams.type"
+                  placeholder="请选择类型"
+                  clearable
+                  @change="handleQuery"
+                >
+                  <el-option label="自理" value="自理" />
+                  <el-option label="护理" value="护理" />
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6" :xs="6" class="query-buttons">
+              <el-form-item label=" ">
+                <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
+                <el-button icon="Refresh" @click="resetQuery">重置</el-button>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-col>
-      <el-col :span="1.5">
-        <el-button
-          type="warning"
-          plain
-          icon="Download"
-          @click="handleExport"
-          v-hasPermi="['system:clients:export']"
-        >导出</el-button>
-      </el-col>
-      <right-toolbar v-model:showSearch="showSearch" @queryTable="getList"></right-toolbar>
     </el-row>
 
-    <el-table v-loading="loading" :data="clientsList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="客户ID" align="center" prop="clientId" />
-      <el-table-column label="姓名" align="center" prop="name" />
-      <el-table-column label="性别" align="center" prop="gender" />
-      <el-table-column label="民族" align="center" prop="nation" />
-      <el-table-column label="出生日期" align="center" prop="birthDate" width="180">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.birthDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="身份证号" width="200" align="center" prop="idCard" />
-      <el-table-column label="楼号" align="center" prop="building" />
-      <el-table-column label="床号" align="center" prop="bedNumber" />
-      <el-table-column label="房间号" align="center" prop="roomNumber" />
-      <el-table-column label="血型" align="center" prop="bloodType" />
-      <!--<el-table-column label="膳食ID" align="center" prop="mealId" />-->
-      <el-table-column label="入住时间" align="center" prop="checkInDate" width="180">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.checkInDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="合同到期时间" align="center" prop="contractEndDate" width="180">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.contractEndDate, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="老人类型" align="center" prop="type" />
-      <el-table-column label="家属" align="center" prop="contactName" />
-      <el-table-column label="家属联系电话" align="center" prop="phone" width="180" />
-      <el-table-column label="添加时间" align="center" prop="createdAt" width="180">
-        <template #default="scope">
-          <span>{{ parseTime(scope.row.createdAt, '{y}-{m}-{d}') }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="150" align="center" class-name="small-padding fixed-width">
-        <template #default="scope">
-          <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:clients:edit']">修改</el-button>
-          <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:clients:remove']">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination background layout="total, sizes, prev, pager, next, jumper" :total="total"
-      v-model:current-page="data.queryParams.pageNum" v-model:page-size="queryParams.pageSize" @current-change="getList"
-      @size-change="getList" />
+    <!-- 表格区域 -->
+    <div class="table-box content-container page-content-box">
+      <!-- 操作按钮区 -->
+      <div class="top-container">
+        <div class="left">
+          <el-button
+            type="primary"
+            plain
+            icon="Plus"
+            @click="handleAdd"
+            v-hasPermi="['system:clients:add']"
+          >新增</el-button>
+          <el-button
+            type="warning"
+            plain
+            icon="Download"
+            @click="handleExport"
+            v-hasPermi="['system:clients:export']"
+          >导出</el-button>
+        </div>
+        <div class="right">
+          <el-button circle @click="showSearch = !showSearch">
+            <SvgIcon
+              :style="'width:15px;height:15px;'"
+              name="svg:search-bt.svg"
+            ></SvgIcon>
+          </el-button>
+          <el-button circle @click="reset">
+            <SvgIcon
+              :style="'width:15px;height:15px;'"
+              name="svg:redo.svg"
+            ></SvgIcon>
+          </el-button>
+        </div>
+      </div>
+      
+      <!-- 表格 -->
+      <el-table
+        v-loading="loading"
+        :data="clientsList"
+        border
+        @selection-change="handleSelectionChange"
+        height="100%"
+      >
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column label="客户ID" align="center" prop="clientId" />
+        <el-table-column label="姓名" align="center" prop="name" />
+        <el-table-column label="性别" align="center" prop="gender" />
+        <el-table-column label="民族" align="center" prop="nation" />
+        <el-table-column label="出生日期" align="center" prop="birthDate" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.birthDate, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="身份证号" width="200" align="center" prop="idCard" />
+        <el-table-column label="楼号" align="center" prop="building" />
+        <el-table-column label="床号" align="center" prop="bedNumber" />
+        <el-table-column label="房间号" align="center" prop="roomNumber" />
+        <el-table-column label="血型" align="center" prop="bloodType" />
+        <el-table-column label="入住时间" align="center" prop="checkInDate" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.checkInDate, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="合同到期时间" align="center" prop="contractEndDate" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.contractEndDate, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="老人类型" align="center" prop="type" />
+        <el-table-column label="家属" align="center" prop="contactName" />
+        <el-table-column label="家属联系电话" align="center" prop="phone" width="180" />
+        <el-table-column label="添加时间" align="center" prop="createdAt" width="180">
+          <template #default="scope">
+            <span>{{ parseTime(scope.row.createdAt, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="150" align="center" class-name="small-padding fixed-width">
+          <template #default="scope">
+            <el-button link type="primary" icon="Edit" @click="handleUpdate(scope.row)" v-hasPermi="['system:clients:edit']">修改</el-button>
+            <el-button link type="primary" icon="Delete" @click="handleDelete(scope.row)" v-hasPermi="['system:clients:remove']">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      
+      <!-- 分页 -->
+      <el-pagination
+        background
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        v-model:current-page="queryParams.pageNum"
+        v-model:page-size="queryParams.pageSize"
+        @current-change="getList"
+        @size-change="getList"
+      />
+</div>
 
 
     <!-- 添加或修改客户/老人基本信息对话框 -->
@@ -600,3 +656,86 @@ saveAs(blob, `客户信息_${new Date().toISOString().slice(0, 10)}.xlsx`)
 getList()
 fetchRoomOptions()
 </script>
+
+<style lang="scss" scoped>
+.page-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-query-box {
+  margin: 0 0 10px 0 !important;
+  padding: 10px 10px 0 10px;
+  background: #f5f7fa;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  :deep(.el-form-item) {
+    margin-bottom: 10px !important;
+  }
+  :deep(.el-form-item--default) {
+    width: 100%;
+    margin-right: 0;
+  }
+  .el-form {
+    width: 100%;
+  }
+}
+
+.content-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  padding: 10px;
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.page-content-box {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  .left {
+    display: flex;
+    gap: 10px;
+  }
+  .right {
+    display: flex;
+    gap: 10px;
+  }
+}
+
+.table-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.el-table {
+  flex: 1;
+  width: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+</style>
