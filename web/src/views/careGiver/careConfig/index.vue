@@ -61,7 +61,7 @@
               show-overflow-tooltip
               align="center"
               min-width="90"
-              prop="bed_id"
+              prop="bedId"
           />
           <el-table-column
               label="操作"

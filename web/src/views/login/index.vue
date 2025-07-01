@@ -2,9 +2,8 @@
 /**
  * 登录页面
  *  */
-import { defineComponent, ref, reactive, computed, onMounted, onActivated } from 'vue';
-import publicApi from '@/http/public.js'; // Assuming this is used for captcha fetching
-import userApi from '@/http/user.js'; // You might want to remove this if not needed anymore
+import { defineComponent, ref, reactive, onMounted } from 'vue';
+import publicApi from '@/http/public.js'; // 如果不再用验证码接口可删除
 import { messageSuccess, messageError } from '@/action/messagePrompt';
 import { useRoute, useRouter } from 'vue-router';
 import { throttleFn_1 as throttleFn } from '@/common/debounceAndThrottle';
@@ -20,6 +19,7 @@ import img_6 from '@/assets/login-imgs/login-bg-3.svg';
 import img_7 from '@/assets/login-imgs/login-bg-4.png';
 import axios from 'axios';  // Import axios for API requests
 import allApi from '../../http/User';
+
 export default defineComponent({
     name: 'LoginView',
     components: {
@@ -31,6 +31,7 @@ export default defineComponent({
         const userData = userDataStore();
         const router = useRouter();
         const route = useRoute();
+
         const dataContainer = reactive({
             form: {
                 username: '',
@@ -38,8 +39,6 @@ export default defineComponent({
                 captchaText: '',
             },
             loading: false,
-            captchaSvg: '',
-            captchaId: '',
             loading_1: false,
             img: {
                 img_1,
@@ -52,7 +51,49 @@ export default defineComponent({
             },
         });
 
-        /** 验证信息 */
+        // 验证码相关
+        const canvasRef = ref(null);
+        const generatedCode = ref('');
+
+        // 生成随机验证码字符串
+        function generateCode(length = 5) {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let code = '';
+            for (let i = 0; i < length; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            generatedCode.value = code;
+            drawCaptcha(code);
+        }
+
+        // 绘制验证码到canvas
+        function drawCaptcha(code) {
+            const canvas = canvasRef.value;
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 背景色
+            ctx.fillStyle = '#f0f0f0';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 文字
+            ctx.font = '24px Arial';
+            ctx.fillStyle = '#333';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(code, 10, canvas.height / 2);
+
+            // 干扰线
+            for (let i = 0; i < 3; i++) {
+                ctx.strokeStyle = `rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`;
+                ctx.beginPath();
+                ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
+                ctx.stroke();
+            }
+        }
+
+        // 验证基础数据
         function validBase(data) {
             const failData = verifiedData(data, {
                 username: {
@@ -89,85 +130,73 @@ export default defineComponent({
             return failData;
         }
 
-        /** 获取验证码 */
-        const getCaptcha = throttleFn(function () {
-            if (dataContainer.loading_1) return;
-            dataContainer.loading_1 = true;
-            publicApi
-                .getCaptcha()
-                .then((res) => {
-                    const data = res.data || {};
-                    dataContainer.captchaId = data.id;
-                    dataContainer.captchaSvg = data.svg;
-                    dataContainer.form.captchaText = '';
-                })
-                .catch(() => {
-                    messageError('验证码获取失败');
-                })
-                .finally(() => {
-                    dataContainer.loading_1 = false;
-                });
-        }, 700);
-        getCaptcha();
-       //登录
-        const onLogin = throttleFn(async function (otherParmas) {
-         
-        if (dataContainer.loading) return;
-        const verifiedData = validBase(dataContainer.form);
-        if (verifiedData) {
-            messageError('参数错误！' + verifiedData[0].label);
-            
-            return;
-        }
-        dataContainer.loading = true;
-        const params = {
-            ...dataContainer.form,
-            ...otherParmas,
-        };
-        params.captchaId = dataContainer.captchaId;
+        // 登录函数
+        const onLogin = throttleFn(async function (otherParams) {
+            if (dataContainer.loading) return;
 
-        try {
-            console.log('请求参数:', params);  // 打印请求参数，确保它们正确
-            const res = await axios.post('http://localhost:8080/user/login', params, {
-            headers: {
-                'Content-Type': 'application/json', // 确保传递的数据是 JSON 格式
-            },
-         });
-
-            let data = res.data || {};
-          
-            if (data.isOk) {
-                console.log("嘿嘿输出一行" + res.data.user.type);
-                localStorage.setItem('user_type', res.data.user.type); // 设置 user_type
-                dataContainer.form.password = ''; // 清除密码
-
-                // 这里使用 await 等待 allApi.login() 的执行完成
-                const loginData = await allApi.login();
-                const token = loginData.token || '';
-                userData.setUserInfo({ token });
-                messageSuccess('登录成功');
-                
-                let routeParams = route.query || {};
-                
-                if (routeParams.from) {
-                    router.push(decodeURIComponent(routeParams.from));
-                    // 强制刷新页面
-                    //window.location.reload();  // 刷新页面，重新加载所有内容
-                } else {
-                    router.push('/');
-                }
-            } else {
-                messageError('登录失败：' + data.msg); // 错误信息
+            // 验证参数
+            const failData = validBase(dataContainer.form);
+            if (failData) {
+                messageError('参数错误！' + failData[0].label);
+                return;
             }
-        } catch (err) {
-            messageError('登录失败：' + err.message);  // 输出错误信息
-        } finally {
-            dataContainer.loading = false;
-            getCaptcha();
-        }
 
-    }, 700);
+            // 校验前端验证码
+            if (dataContainer.form.captchaText.toLowerCase() !== generatedCode.value.toLowerCase()) {
+                messageError('验证码错误，请重新输入');
+                generateCode(); // 重新生成验证码
+                dataContainer.form.captchaText = '';
+                return;
+            }
 
+            dataContainer.loading = true;
+            const params = {
+                ...dataContainer.form,
+                ...otherParams,
+            };
+
+            try {
+                console.log('请求参数:', params);
+                const res = await axios.post('http://localhost:8080/user/login', params, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                let data = res.data || {};
+
+                if (data.isOk) {
+                    console.log("嘿嘿输出一行" + res.data.user.username);
+                    // 保存 roleId 和 token
+                    const loginData = await allApi.login();
+                    const token = loginData.token || '';
+                    const roleId = res.data.user.roleId;
+                    const caregiverId = res.data.user.caregiverId;
+                    const reviewerId = res.data.user.id;
+                    userData.setUserInfo({ token, roleId, caregiverId, reviewerId });
+
+                    localStorage.setItem('user_type', res.data.user.type);
+                    dataContainer.form.password = '';
+
+                    messageSuccess('登录成功');
+
+                    let routeParams = route.query || {};
+                    if (routeParams.from) {
+                        router.push(decodeURIComponent(routeParams.from));
+                    } else {
+                        router.push('/');
+                    }
+                } else {
+                    messageError('登录失败：' + data.msg);
+                }
+            } catch (err) {
+                messageError('登录失败：' + err.message);
+            } finally {
+                dataContainer.loading = false;
+                generateCode(); // 登录失败或完成后，刷新验证码
+                dataContainer.form.captchaText = '';
+            }
+        }, 700);
 
         /** 去除首尾空格 */
         function toTrim(data, p) {
@@ -186,17 +215,27 @@ export default defineComponent({
             data[p] = str;
         }
 
+        // 初始化，页面加载时生成验证码
+        onMounted(() => {
+            generateCode();
+            // 1分钟刷新一次验证码
+            setInterval(() => {
+                generateCode();
+            }, 60000);
+        });
+
         return {
             dataContainer,
             onLogin,
-            getCaptcha,
             toTrim,
             palindrome,
+            canvasRef,
+            generatedCode,
+            generateCode,
         };
     },
 });
 </script>
-
 
 <template>
     <div
@@ -310,7 +349,15 @@ export default defineComponent({
                             @keyup.enter="onLogin"
                         >
                         </el-input>
-                        <el-image class="img" :src="dataContainer.img.img_3" fit="cover" />
+                        <!-- 这里改成canvas显示验证码 -->
+                        <canvas
+                            ref="canvasRef"
+                            width="100"
+                            height="40"
+                            class="img"
+                            style="cursor: pointer;"
+                            @click="generateCode"
+                        ></canvas>
                     </div>
                     <div class="bt-list">
                         <el-button
@@ -347,13 +394,9 @@ export default defineComponent({
     justify-content: center;
     align-items: center;
     background-image: var(--bg-img-2);
-    // background-size: cover;
-    // backdrop-filter: blur(12px);
     background-size: contain;
     background-position: center bottom;
     background-repeat: no-repeat;
-    // background: #007FFF;
-    // background: linear-gradient(to right,rgba(0, 128, 255, 0.421),rgba(0, 89, 178, 0.421));
     padding: 15px;
     box-sizing: border-box;
     color: rgb(32, 32, 32);
@@ -388,9 +431,6 @@ export default defineComponent({
         > .left {
             flex: 1 1 0;
             width: 0;
-            // background-image: var(--bg-img-1);
-            // background-size: cover;
-            // box-shadow: inset 1px 0px 4px #0000006b;
             background-color: #e9e9e9;
             background-repeat: no-repeat;
             :deep(.el-carousel) {
@@ -480,7 +520,6 @@ export default defineComponent({
                     display: flex;
                     flex-direction: row;
                     justify-content: center;
-                    justify-content: center;
                     margin: 15px 0;
                     > .item {
                         border: 1px solid #ddd;
@@ -518,83 +557,55 @@ export default defineComponent({
                     transition: all 0.2s;
                     box-shadow: inset 0 1px 4px #0000001f;
                     &:focus-within {
-                        box-shadow: inset 0 1px 4px #0000001f, 0 0 0 2px #007fff !important;
+                        box-shadow: inset 0 1px 4px #06f;
                     }
-                    :deep(.el-input) {
-                        flex: 1 1 0;
-                        width: 0;
-                        border: none;
-                        box-shadow: none;
-                        outline: none;
-                        background-color: transparent;
-                        .el-input__wrapper {
-                            border: none;
-                            box-shadow: none;
-                            outline: none;
-                            background-color: transparent;
-                            padding: 0;
-                            input {
-                                font-size: 17px;
-                            }
-                        }
-                        .el-input__suffix {
-                            .el-icon {
-                                font-size: 20px !important;
-                                color: #3c3c3c !important;
-                            }
-                        }
+                    .el-input {
+                        flex: 1;
                     }
                     &.code {
-                        padding: 0 5px 0 15px;
-                    }
-                    > .img {
-                        width: 100px;
-                        height: calc(100% - 10px);
-                        margin-left: 15px;
-                        cursor: pointer;
-                        border-radius: 5px;
-                        border: 1px solid rgba(0, 0, 0, 0.156);
+                        position: relative;
+                        > canvas.img {
+                            position: absolute;
+                            right: 10px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            border-radius: 4px;
+                            box-shadow: 0 0 5px #ccc;
+                            user-select: none;
+                        }
                     }
                 }
                 > .bt-list {
+                    margin: 40px 0 0 0;
+                    width: 100%;
+                    max-width: 300px;
                     display: flex;
-                    flex-direction: row;
                     justify-content: center;
-                    margin: 20px 0;
-                    :deep(.login-bt) {
-                        border-radius: 999px;
-                        border: none;
-                        background: #007fff;
-                        color: #fff;
-                        font-size: 14px;
-                        font-weight: bold;
-                        padding: 12px 60px;
-                        letter-spacing: 1px;
-                        height: 45px;
-                        background: linear-gradient(to right, #007fff, #0059b2);
-                        box-shadow: 0 3px 3px -2px #0003, 0 3px 4px #00000024, 0 1px 8px #0000001f;
+                    > .login-bt {
+                        width: 100%;
                     }
                 }
                 > .other {
-                    font-size: 14px;
+                    margin: 15px 0 0 0;
+                    font-size: 12px;
                     opacity: 0.5;
-                    margin-top: 0;
+                    > a {
+                        color: #666;
+                    }
                 }
             }
         }
     }
     > .bottom {
-        position: fixed;
-        bottom: 15px;
+        position: absolute;
+        bottom: 5px;
         width: 100%;
-        height: fit-content;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        color: #ccc;
         font-size: 13px;
-        color: white;
-        > * {
-            margin: 0 15px;
+        text-align: center;
+        > a.bt {
+            margin-left: 10px;
+            vertical-align: middle;
         }
     }
 }

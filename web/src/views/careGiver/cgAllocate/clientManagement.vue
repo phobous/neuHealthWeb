@@ -28,7 +28,7 @@
             <el-table-column prop="name" label="客户姓名" />
             <el-table-column prop="gender" label="性别" />
             <el-table-column prop="age" label="年龄" />
-            <el-table-column prop="bed_id" label="床号" />
+            <el-table-column prop="bedId" label="床号" />
             <el-table-column label="操作" width="150">
               <template #default="scope">
                 <el-button type="danger" size="small" @click="removeClient(scope.row.id)">删除</el-button>
@@ -43,7 +43,7 @@
             <el-table-column prop="name" label="客户姓名" />
             <el-table-column prop="gender" label="性别" />
             <el-table-column prop="age" label="年龄" />
-            <el-table-column prop="bed_id" label="床号" />
+            <el-table-column prop="bedId" label="床号" />
             <el-table-column label="操作" width="100">
               <template #default="scope">
                 <el-button type="primary" size="small" @click="assignCaregiver(scope.row.id)">添加</el-button>

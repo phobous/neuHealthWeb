@@ -117,8 +117,9 @@ const removeItem = async (itemId) => {
 
 const confirm = () => {
   ElMessage.success('配置已保存');
-  router.push('/main/careLevel'); // 跳回上级页面
+  router.push({ name: 'care-level' });  // 使用命名路由
 };
+
 
 const goBack = () => {
   router.back();

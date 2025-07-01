@@ -167,6 +167,7 @@ onMounted(async () => {
     if (response.data.if === 1) {
       allBeds.value = response.data.beds;
       initRoomList();
+      console.log("房间表"+response.data.beds);
     } else {
       ElMessage.warning('未找到可用床位信息');
     }
@@ -197,7 +198,7 @@ const handleRoomChange = () => {
   
   // 筛选当前房间的可用床位
   const beds = allBeds.value
-    .filter(bed => bed.roomId === formData.newRoom && !bed.isDeleted);
+    .filter(bed => bed.roomId === formData.newRoom && !bed.isDeleted && bed.status === '空闲');
     
   bedList.value = beds.sort((a, b) => a.bedNumber - b.bedNumber);
 };

@@ -96,6 +96,46 @@ export const constantRoutes = [
             },
             /** 一些页面例子 */
             {
+                path: 'helper-daily',
+                component: () => import('@/views/healthManage/clientCare/index.vue'),
+                name: 'helper-daily',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'helper-checkout',
+                component: () => import('@/views/healthManage/helperCheckOutRequest/index.vue'),
+                name: 'helper-checkout',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'helper-out',
+                component: () => import('@/views/healthManage/helperOutRoom/index.vue'),
+                name: 'helper-out',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'helper-care-record',
+                component: () => import('@/views/healthManage/helperCareRecord/index.vue'),
+                name: 'helper-care-record',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
                 path: 'index',
                 component: () => import('@/views/system/main/index.vue'),
                 name: 'main-index',
@@ -189,6 +229,46 @@ export const constantRoutes = [
                 path: 'care-level-Item',
                 component: () => import('@/views/careManage/carelevel/ProjectConfig.vue'),
                 name: 'care-level-Item',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
+                },
+            },
+            {
+                path: 'daily-care',
+                component: () => import('@/views/healthManage/clientCare/components/dailyCare.vue'),
+                name: 'daily-care',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
+                },
+            },
+            {
+                path: 'check-out-detail',
+                component: () => import('@/views/healthManage/helperCheckOutRequest/components/CheckOutRequest.vue'),
+                name: 'check-out-detail',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
+                },
+            },
+             {
+                path: 'check-out-room',
+                component: () => import('@/views/healthManage/helperOutRoom/components/CheckOutRequest.vue'),
+                name: 'check-out-room',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: false,
+                },
+            },
+            {
+                path: 'check-care-record',
+                component: () => import('@/views/healthManage/helperCareRecord/components/CareRecordDialog.vue'),
+                name: 'check-care-record',
                 meta: {
                     layoutName: 'main',
                     redirectName: 'main-redirect',
@@ -310,6 +390,16 @@ export const constantRoutes = [
                 path: 'user-manage',
                 component: () => import('@/views/userManage/index.vue'),
                 name: 'user-manage',
+                meta: {
+                    layoutName: 'main',
+                    redirectName: 'main-redirect',
+                    hasTag: true,
+                },
+            },
+            {
+                path: 'food-manage',
+                component: () => import('@/views/foodManage/index.vue'),
+                name: 'food-manage',
                 meta: {
                     layoutName: 'main',
                     redirectName: 'main-redirect',

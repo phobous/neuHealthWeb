@@ -148,6 +148,7 @@
   import { parseTime } from '@/utils/clientTool.js'
   import * as XLSX from 'xlsx'
   import { saveAs } from 'file-saver'
+  import { userDataStore } from '@/store/user';
   const {
     proxy
   } = getCurrentInstance()
@@ -165,6 +166,8 @@
   const queryRef = ref(null)
   const dialogVisible = ref(false)
 
+  const userStore = userDataStore(); // ✅ 正确调用 defineStore 实例化
+  const reviewerId = userStore.reviewerId;
   const data = reactive({
     form: {},
     queryParams: {
@@ -176,7 +179,7 @@
       reason: null,
       requestedAt: null,
       status: null,
-      reviewerId: null,
+      reviewerId: reviewerId,
       reviewTime: null
     },
     rules: {
@@ -232,7 +235,7 @@
   // 审批表单数据
   const approveForm = ref({
   requestId:null,
-  reviewerId:'',
+  reviewerId:reviewerId,
   status: '',
   detail: ''
   })
@@ -355,7 +358,7 @@
   // 点击按钮时打开对话框，并填入当前行数据
   function handleUpdate(row) {
   approveForm.value.requestId = row.id
-  approveForm.value.reviewerId = row.reviewerId
+  approveForm.value.reviewerId = reviewerId
   approveForm.value.status = ''
   approveForm.value.detail = ''
   dialogVisible.value = true
